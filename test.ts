@@ -45,6 +45,11 @@ describe("runTest", () => {
     withStderr(runTest("echo foo"), assertNotMatch, /foo/);
   });
 
+  it("caches the test results with a runtime-dependency", () => {
+    withStderr(runTest("# ${pkgs.hello}\necho foo"), assertMatch, /foo/);
+    withStderr(runTest("# ${pkgs.hello}\necho foo"), assertNotMatch, /foo/);
+  });
+
   it("does not cache test results when changing test script", () => {
     withStderr(
       runTest("echo foo"),

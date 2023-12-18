@@ -8,10 +8,10 @@
         };
         escapeShellArg = pkgs.lib.strings.escapeShellArg;
         exec = cmd: builtins.readFile (builtins.toString (pkgs.runCommand "exe" {} "${cmd} > $out"));
-        version = "1";
+        version = "2023-12-18";
         hashInput = testCommand: pkgs.runCommand "gen-hash-input" {} ''
           echo "${version}" > $out
-          echo ${escapeShellArg testCommand} >> $out
+          echo ${escapeShellArg testCommand} | base64 >> $out
         '';
         getHash = testCommand: exec "echo -n $(${pkgs.nix}/bin/nix-hash --type sha256 --base64 ${hashInput testCommand})";
         runTest = buildInputs: testCommand: pkgs.runCommand "fod-test" {
