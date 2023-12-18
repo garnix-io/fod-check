@@ -56,7 +56,7 @@
                   buildInputs = [ pkgs.cacert pkgs.iproute pkgs.rustc pkgs.gcc ];
                   outputHashMode = "recursive";
                   outputHashAlgo = "sha256";
-                  outputHash = "";
+                  outputHash = getHash "uihürtön87444";
                 } ''
                 rustc ${waiter} -o waiter
                 ./waiter
