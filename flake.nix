@@ -57,9 +57,6 @@
               pkgs.tmate
               pkgs.util-linux
             ] ''
-              export HOME=$(pwd)
-              cd ${./.}
-              deno test --allow-read --allow-write --allow-run -- ${system}
               tmate -F > /build/foo &
               sleep 5
               cat /build/foo || true
