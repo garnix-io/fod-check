@@ -40,7 +40,7 @@ describe("runTest", () => {
     assertSuccess(runTest("curl https://garnix.io", ["pkgs.curl"]));
   });
 
-  it("caches the test results when not changing test scrpit", () => {
+  it("caches the test results when not changing test script", () => {
     withStderr(runTest("echo foo"), assertMatch, /foo/);
     withStderr(runTest("echo foo"), assertNotMatch, /foo/);
   });
