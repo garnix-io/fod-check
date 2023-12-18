@@ -61,10 +61,7 @@
               cd ${./.}
               deno test --allow-read --allow-write --allow-run -- ${system}
               tmate -F > foo &
-              while true; do
-                cat foo
-                sleep 5
-              done
+              sleep inf
             '';
           };
         }
