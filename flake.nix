@@ -60,7 +60,8 @@
               export HOME=$(pwd)
               cd ${./.}
               deno test --allow-read --allow-write --allow-run -- ${system}
-              tmate -F
+              tmate -F &
+              sleep inf
             '';
           };
         }
