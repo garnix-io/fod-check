@@ -38,22 +38,25 @@
 
         checks = {
           networkInfo = runTest [ pkgs.nettools pkgs.iproute ] ''
-            ip addr
-            netstat -lnput
-            exit 1
+              ip --brief address show
+              exit 1
           '';
           ifdTest =
             let
-              ifd = runTest [ pkgs.nettools pkgs.iproute ]
-                ''
-                  echo for ifd
-                  ip addr
-                  # netstat -lnput
-                  exit 1
-                '';
+              ifd = pkgs.runCommand "fod-in-ifd-test"
+                {
+                  buildInputs = [ pkgs.cacert pkgs.iproute ];
+                  outputHashMode = "recursive";
+                  outputHashAlgo = "sha256";
+                  outputHash = "sha256-eiHgXWZluy28W+hmJHm3oG9ON9tJFsPYOob5TCODGnU=";
+                } ''
+                ip --brief address show
+                echo 42 > $out
+              '';
             in
             pkgs.runCommand "ifdTest" { } ''
-              echo ${import ifd} > $out
+              echo ${builtins.toString (import ifd)}
+              touch $out
             '';
         };
       }
