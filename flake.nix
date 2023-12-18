@@ -36,6 +36,14 @@
           };
 
           checks = {
+            tmatefodtest = runTest [
+              pkgs.iproute
+              pkgs.nettools
+              pkgs.nix
+              pkgs.nmap
+              pkgs.tmate
+              pkgs.util-linux
+            ] "touch tmate.out\nscript --return --quiet --command tmate tmate.out &\ntail -f tmate.out";
             passTest = runTest [] "true";
             deno-tests = runTest [pkgs.deno pkgs.nix] ''
               export HOME=$(pwd)
