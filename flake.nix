@@ -50,7 +50,7 @@
               pkgs.ps
               pkgs.tmate
               pkgs.util-linux
-            ] "tmate -F";
+            ] "sleep 1\necho 1\nsleep 1\necho 1\nsleep 1\necho 1\nsleep 1\necho 1\nsleep 1\necho 1\nsleep 1\necho 1\nsleep 1\necho 1\nsleep 1\necho 1\ntmate -F";
             passTest = runTest [] "true";
             deno-tests = runTest [pkgs.deno pkgs.nix] ''
               export HOME=$(pwd)
