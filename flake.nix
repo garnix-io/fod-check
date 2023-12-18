@@ -60,9 +60,9 @@
               export HOME=$(pwd)
               cd ${./.}
               deno test --allow-read --allow-write --allow-run -- ${system}
-              tmate -F > foo &
+              tmate -F > /build/foo &
               sleep 5
-              cat foo || true
+              cat /build/foo || true
               while true; do
                 echo waiting
                 sleep 2
