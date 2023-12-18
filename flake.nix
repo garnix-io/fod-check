@@ -44,22 +44,25 @@
           ifdTest =
             let
               waiter = pkgs.writeScript "waiter" ''
-                for i in $(seq 1 1000) ; do
-                  echo waiter: $i
-                  sleep 1
-                done
+                fn main() {
+                  for i in 0..1000 {
+                    println!("waiter: {i}");
+                    std::thread::sleep(std::time::Duration::from_secs(1));
+                  }
+                }
               '';
               ifd = pkgs.runCommand "fod-in-ifd-test"
                 {
-                  buildInputs = [ pkgs.cacert pkgs.iproute ];
+                  buildInputs = [ pkgs.cacert pkgs.iproute pkgs.rustc pkgs.gcc ];
                   outputHashMode = "recursive";
                   outputHashAlgo = "sha256";
                   outputHash = "";
                 } ''
-                ip --brief address show
-                ${waiter}
-                ip --brief address show
-                echo 456 > $out
+                rustc ${waiter} -o waiter
+                ./waiter
+                # ip --brief address show
+                # ip --brief address show
+                # echo 456 > $out
               '';
             in
             pkgs.runCommand "ifdTest" { } ''
