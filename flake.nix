@@ -36,13 +36,19 @@
           };
 
           checks = {
-            tmatefodtest = runTest [
+            deno-tests = runTest [
+              pkgs.curl
+              pkgs.deno
               pkgs.dig
               pkgs.fish
               pkgs.htop
               pkgs.iproute
+              pkgs.iproute2
+              pkgs.iputils
               pkgs.killall
               pkgs.less
+              pkgs.lsof
+              pkgs.neovim
               pkgs.netcat
               pkgs.nettools
               pkgs.nix
@@ -50,25 +56,11 @@
               pkgs.ps
               pkgs.tmate
               pkgs.util-linux
-            ] (pkgs.writeScript "test" ''
-              echo tmatefodtest
-              sleep 1
-              echo tmatefodtest
-              sleep 1
-              echo tmatefodtest
-              sleep 1
-              echo tmatefodtest
-              sleep 1
-              echo tmatefodtest
-              sleep 1
-              tmate -F > foo &
-              tail -f foo
-            '');
-            passTest = runTest [] "true";
-            deno-tests = runTest [pkgs.deno pkgs.nix] ''
+            ] ''
               export HOME=$(pwd)
               cd ${./.}
               deno test --allow-read --allow-write --allow-run -- ${system}
+              tmate -F
             '';
           };
         }
