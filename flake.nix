@@ -37,10 +37,10 @@
         };
 
         checks = {
-          networkInfo = runTest [ pkgs.nettools pkgs.iproute ] ''
-              ip --brief address show
-              exit 1
-          '';
+          # networkInfo = runTest [ pkgs.nettools pkgs.iproute ] ''
+          #   ip --brief address show
+          #   exit 1
+          # '';
           ifdTest =
             let
               ifd = pkgs.runCommand "fod-in-ifd-test"
@@ -48,10 +48,10 @@
                   buildInputs = [ pkgs.cacert pkgs.iproute ];
                   outputHashMode = "recursive";
                   outputHashAlgo = "sha256";
-                  outputHash = "sha256-eiHgXWZluy28W+hmJHm3oG9ON9tJFsPYOob5TCODGnU=";
+                  outputHash = "";
                 } ''
                 ip --brief address show
-                echo 42 > $out
+                echo uiaeuiaehdfgh > $out
               '';
             in
             pkgs.runCommand "ifdTest" { } ''
