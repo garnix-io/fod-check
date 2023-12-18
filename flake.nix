@@ -15,7 +15,6 @@
         '';
         getHash = testCommand: exec "echo -n $(${pkgs.nix}/bin/nix-hash --type sha256 --base64 ${hashInput testCommand})";
         runTest = buildInputs: testCommand: pkgs.runCommand "fod-test" {
-          requiredSystemFeatures = ["recursive-nix"];
           buildInputs = [ pkgs.cacert ] ++ buildInputs;
           outputHashMode = "recursive";
           outputHashAlgo = "sha256";
