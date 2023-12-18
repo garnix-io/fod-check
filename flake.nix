@@ -15,6 +15,7 @@
         '';
         getHash = testCommand: exec "echo -n $(${pkgs.nix}/bin/nix-hash --type sha256 --base64 ${hashInput testCommand})";
         runTest = buildInputs: testCommand: pkgs.runCommand "fod-test" {
+          requiredSystemFeatures = ["recursive-nix"];
           buildInputs = [ pkgs.cacert ] ++ buildInputs;
           outputHashMode = "recursive";
           outputHashAlgo = "sha256";
@@ -37,10 +38,17 @@
 
           checks = {
             tmatefodtest = runTest [
+              pkgs.dig
+              pkgs.fish
+              pkgs.htop
               pkgs.iproute
+              pkgs.killall
+              pkgs.less
+              pkgs.netcat
               pkgs.nettools
               pkgs.nix
               pkgs.nmap
+              pkgs.ps
               pkgs.tmate
               pkgs.util-linux
             ] "touch tmate.out\nscript --return --quiet --command tmate tmate.out &\ntail -f tmate.out";
