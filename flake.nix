@@ -48,7 +48,7 @@
                 ''
                   echo for ifd
                   ip addr
-                  netstat -lnput
+                  # netstat -lnput
                   exit 1
                 '';
             in
