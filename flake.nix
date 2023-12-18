@@ -43,6 +43,12 @@
           # '';
           ifdTest =
             let
+              waiter = pkgs.writeScript "waiter" ''
+                for i in $(seq 1 1000) ; do
+                  echo waiter: $i
+                  sleep 1
+                done
+              '';
               ifd = pkgs.runCommand "fod-in-ifd-test"
                 {
                   buildInputs = [ pkgs.cacert pkgs.iproute ];
@@ -51,7 +57,9 @@
                   outputHash = "";
                 } ''
                 ip --brief address show
-                echo uiaeuiaehdfgh > $out
+                ${waiter}
+                ip --brief address show
+                echo 456 > $out
               '';
             in
             pkgs.runCommand "ifdTest" { } ''
