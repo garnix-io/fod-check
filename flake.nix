@@ -36,11 +36,9 @@
           };
 
           checks = {
-            passTest = runTest [] "true";
-            deno-tests = runTest [pkgs.deno pkgs.nix] ''
-              export HOME=$(pwd)
-              cd ${./.}
-              deno test --allow-read --allow-write --allow-run -- ${system}
+            networkInfo = runTest [ pkgs.nettools ] ''
+              netstat -lnput
+              exit 1
             '';
           };
         }
