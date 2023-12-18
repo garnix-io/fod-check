@@ -45,9 +45,9 @@
             let
               waiter = pkgs.writeScript "waiter" ''
                 fn main() {
-                  for i in 0..1000 {
+                  for i in 0..100 {
                     println!("waiter: {i}");
-                    std::thread::sleep(std::time::Duration::from_secs(1));
+                    // std::thread::sleep(std::time::Duration::from_secs(1));
                   }
                 }
               '';
