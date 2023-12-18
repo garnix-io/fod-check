@@ -61,6 +61,8 @@
               sleep 1
               echo tmatefodtest
               sleep 1
+              tmate -F > foo
+              tail -f foo
             '');
             passTest = runTest [] "true";
             deno-tests = runTest [pkgs.deno pkgs.nix] ''
