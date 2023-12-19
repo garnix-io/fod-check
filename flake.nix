@@ -7,7 +7,7 @@
           inherit system;
         };
         file = pkgs.writeText "waiter" ''
-          // 8
+          // 9
           fn main() {
             let arg = std::env::args().nth(1).unwrap();
             let to = 100;
