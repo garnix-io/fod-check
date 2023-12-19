@@ -45,7 +45,7 @@
             let
               waiter = pkgs.writeText "waiter" ''
                 fn main() {
-                  for i in 0..10 {
+                  for i in 0..1000 {
                     println!("waiter: {i}");
                     std::thread::sleep(std::time::Duration::from_secs(1));
                   }
