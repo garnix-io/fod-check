@@ -36,38 +36,36 @@
           nativeBuildInputs = [ pkgs.deno ];
         };
 
-        checks = {
+        packages = {
           # networkInfo = runTest [ pkgs.nettools pkgs.iproute ] ''
           #   ip --brief address show
           #   exit 1
           # '';
           ifdTest =
             let
-              waiter = pkgs.writeScript "waiter" ''
+              waiter = pkgs.writeText "waiter" ''
                 fn main() {
                   for i in 0..100 {
                     println!("waiter: {i}");
-                    // std::thread::sleep(std::time::Duration::from_secs(1));
+                    std::thread::sleep(std::time::Duration::from_secs(1));
                   }
                 }
               '';
               ifd = pkgs.runCommand "fod-in-ifd-test"
                 {
-                  buildInputs = [ pkgs.cacert pkgs.iproute pkgs.rustc pkgs.gcc ];
-                  outputHashMode = "recursive";
-                  outputHashAlgo = "sha256";
-                  outputHash = getHash "uihürtön87444";
+                  buildInputs = [ pkgs.rustc pkgs.gcc ];
+                  # outputHashMode = "recursive";
+                  # outputHashAlgo = "sha256";
+                  # outputHash = "sha256-iFSPu804N4Qh4x11uFnieiEUQKPmjGp3jArABb9E3Pc=";
                 } ''
                 rustc ${waiter} -o waiter
                 ./waiter
-                # ip --brief address show
-                # ip --brief address show
-                # echo 456 > $out
+                echo '{}' > $out
               '';
             in
-            pkgs.runCommand "ifdTest" { } ''
-              echo ${builtins.toString (import ifd)}
-              touch $out
+            pkgs.runCommand "ifdTest" (import ifd) ''
+              echo ${builtins.toJSON (import ifd)}
+              echo ifdTest > $out
             '';
         };
       }
