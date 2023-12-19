@@ -6,26 +6,37 @@
         pkgs = import "${nixpkgs}" {
           inherit system;
         };
-        waiter = pkgs.writeText "waiter" ''
+        file = pkgs.writeText "waiter" ''
+          // 8
           fn main() {
-            for i in 0..1000 {
-              println!("waiter: {i} 6");
+            let arg = std::env::args().nth(1).unwrap();
+            let to = 100;
+            for i in 0..to {
+              println!("arg: {arg}, i: {i}/{to}");
               std::thread::sleep(std::time::Duration::from_secs(1));
             }
           }
         '';
-        ifd = pkgs.runCommand "fod-in-ifd-test"
-          {
-            nativeBuildInputs = [ pkgs.rustc pkgs.gcc ];
-            # outputHashMode = "recursive";
-            # outputHashAlgo = "sha256";
-            # outputHash = "sha256-iFSPu804N4Qh4x11uFnieiEUQKPmjGp3jArABb9E3Pc=";
-          } ''
-          rustc ${waiter} -o waiter2
-          ./waiter2
-          echo 'pkgs : { packages.default = pkgs.hello; }' > $out
-        '';
+        waiter = n:
+          pkgs.runCommand "fod-in-ifd-test"
+            {
+              nativeBuildInputs = [ pkgs.rustc pkgs.gcc ];
+            } ''
+            rustc ${file} -o waiter
+            ./waiter ${builtins.toString n}
+            touch $out
+          '';
+        lists = pkgs.lib.lists;
       in
-      (import ifd) pkgs
+      {
+        packages.default = pkgs.linkFarm "def" (
+          lists.map
+            (n:
+              {
+                name = "waiter-${builtins.toString n}";
+                path = waiter n;
+              })
+            (lists.range 0 50));
+      }
     );
 }
