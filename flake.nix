@@ -10,10 +10,8 @@
     , nixpkgs
     , flake-utils
     }:
-    flake-utils.lib.eachDefaultSystem (system:
     let
       inherit (nixpkgs) lib;
-      pkgs = nixpkgs.legacyPackages.${system};
       inherit (lib.strings) escapeShellArg;
 
       version = "2023-12-18";
@@ -33,7 +31,7 @@
         then builtins.convertHash { inherit hash hashAlgo; toHashFormat = "sri"; }
         else hash;
 
-      runTest = buildInputs: testCommand: pkgs.runCommand "fod-test"
+      mkRunTest = pkgs: buildInputs: testCommand: pkgs.runCommand "fod-test"
         {
           buildInputs = [ pkgs.cacert ] ++ buildInputs;
           outputHashMode = "flat";
@@ -47,22 +45,33 @@
           echo -n ${escapeShellArg (hashInput testCommand)} > $out
         '';
     in
+    (flake-utils.lib.eachDefaultSystem (system:
+    let
+      pkgs = nixpkgs.legacyPackages.${system};
+      runFODTest = mkRunTest pkgs;
+    in
     {
-      lib = {
-        inherit runTest version;
-      };
-
       devShells.default = pkgs.mkShell {
         nativeBuildInputs = [ pkgs.deno ];
       };
 
+      legacyPackages = { inherit runFODTest; };
+
       checks = {
-        passTest = runTest [ ] "true";
-        deno-tests = runTest [ pkgs.deno pkgs.nix ] ''
+        passTest = runFODTest [ ] "true";
+        deno-tests = runFODTest [ pkgs.deno pkgs.nix ] ''
           export HOME=$(pwd)
           cd ${./.}
           deno test --allow-read --allow-write --allow-run -- ${system}
         '';
       };
-    });
+    }))
+    //
+    {
+      lib = { inherit version; };
+
+      overlays.default = final: _: {
+        runFODTest = mkRunTest final;
+      };
+    };
 }

@@ -86,10 +86,13 @@ function runTest(test: string, buildInputs: Array<string> = []) {
         let
           pkgs = import "\${nixpkgs}" {
             system = "${currentSystem}";
+            overlays = [
+              fod.overlays.default
+            ];
           };
         in {
           checks.${currentSystem}.sample-check =
-            fod.lib.${currentSystem}.runTest
+            pkgs.runFODTest
             [${buildInputs.join(" ")}]
             "${testScript}";
         };
