@@ -44,7 +44,7 @@
           echo ${escapeShellArg "running test: \n${testCommand}"}
           echo ---
           ${testCommand}
-          echo -n '${hashInput testCommand}' > $out
+          echo -n ${escapeShellArg (hashInput testCommand)} > $out
         '';
     in
     {
